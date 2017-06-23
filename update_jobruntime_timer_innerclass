@@ -1,0 +1,28 @@
+
+//an inner class you can schedule when creating a Job with a Job Interface.
+
+    /**
+     * internal class to handle scheduled updates of the Quartz jobruntime attribute
+     */
+    class UpdateJobTimer extends TimerTask{
+    	private JobExecutionContextImpl jec;
+    	/* usage example, such as at the start of the execute method of the Job interface:
+    	 * Timer timer = new Timer();
+    	 * //update every 10 seconds (in milliseconds), whatever poll timing you want
+    	 * timer.schedule(new UpdateJobTimer(jec), 0, 10000);
+    	 * ...
+    	 * timer.cancel(); //do cleanup in all appropriate spots
+    	 */
+    	
+    	UpdateJobTimer(JobExecutionContextImpl jec){
+    		this.jec = jec;
+    	}
+    	
+		@Override
+		public void run() {
+			long runtimeinms = jec.getFireTime().getTime() - new java.util.Date().getTime();
+			jec.setJobRunTime(runtimeinms);
+			System.out.println("DEBUG TIMERTASK on JOB: " + jec.getJobDetail().getKey().getName() + " triggered [" + jec.getFireTime() + "] updated [" + new java.util.Date() + "]" );
+		}
+    	
+    }
